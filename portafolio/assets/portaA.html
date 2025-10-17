@@ -1,0 +1,864 @@
+<!-- index.html -->
+<!doctype html>
+<html lang="es">
+
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Portfolio — chameleon Croo</title>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Quicksand:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Basic reset + styles -->
+    <style>
+         :root {
+            --lavender: #b0ace7;
+            --navy: #120b73;
+            --lime: #cbd664;
+            --black: #000000;
+            --white-08: rgba(255, 255, 255, 0.08);
+            --white-12: rgba(255, 255, 255, 0.12);
+        }
+        
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Quicksand', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+            background: var(--black);
+            color: #fff;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            scroll-behavior: smooth;
+            overflow-y: auto;
+        }
+        /* Container and layout */
+        
+        .site {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        /* Decorative texture layers */
+        
+        .bg-texture {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-image: url('assets/grunge-noise.png');
+            /* opcional: reemplaza por tu textura */
+            background-size: cover;
+            opacity: 0.16;
+            mix-blend-mode: overlay;
+        }
+        /* Garabatos - inline SVG handled below in markup */
+        
+        .decor {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+        /* Header / nav */
+        
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 40;
+            padding: 18px 36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.06));
+            backdrop-filter: blur(2px);
+        }
+        
+        .brand {
+            font-weight: 700;
+            letter-spacing: .6px;
+            color: var(--lavender);
+            font-size: 20px;
+        }
+        
+        nav ul {
+            display: flex;
+            gap: 18px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+        }
+        
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 160ms ease;
+            font-weight: 600;
+        }
+        /* Hover: white low opacity background + lime text */
+        
+        nav a:hover {
+            background: var(--white-12);
+            color: var(--lime);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+        }
+        /* Scroll-snap pages */
+        
+        main {
+            position: relative;
+            z-index: 10;
+            scroll-snap-type: y mandatory;
+        }
+        
+        section {
+            min-height: 100vh;
+            padding: 120px 6% 80px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            scroll-snap-align: start;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        /* Section title (graffiti style) */
+        
+        .title {
+            font-family: 'Permanent Marker', sans-serif;
+            font-size: clamp(28px, 4vw, 48px);
+            color: var(--lime);
+            text-shadow: 0 2px 0 rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .subtitle {
+            color: var(--lavender);
+            font-weight: 600;
+            margin-top: 4px;
+            font-size: 14px;
+        }
+        /* Two-column layout for content */
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+        
+        @media(min-width:960px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+                align-items: start;
+            }
+        }
+        /* Cards (thumbnails) */
+        
+        .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.2));
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+            transition: transform .28s ease, box-shadow .28s ease;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 44px rgba(0, 0, 0, 0.7);
+        }
+        
+        .thumb {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+            background: #111;
+        }
+        
+        .card .meta {
+            padding: 12px 14px;
+        }
+        
+        .link-btn {
+            display: inline-block;
+            padding: 8px 12px;
+            background: transparent;
+            color: var(--lime);
+            border-radius: 8px;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            font-weight: 700;
+            transition: all .18s ease;
+        }
+        
+        .link-btn:hover {
+            background: var(--lime);
+            color: #000;
+        }
+        /* Demo reel */
+        
+        .demo {
+            width: 100%;
+            max-width: 920px;
+            margin: 0 auto;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        
+        video {
+            width: 100%;
+            height: auto;
+            display: block;
+            background: #000;
+        }
+        /* Carousel simple */
+        
+        .carousel {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            background: #0b0b0b;
+        }
+        
+        .carousel-track {
+            display: flex;
+            gap: 12px;
+            transition: transform 0.45s cubic-bezier(.2, .9, .2, 1);
+        }
+        
+        .carousel-item {
+            min-width: 260px;
+            flex: 0 0 auto;
+        }
+        
+        .carousel-controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .btn {
+            padding: 10px 14px;
+            border-radius: 8px;
+            background: var(--lavender);
+            color: #000;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+        }
+        /* About & social icons */
+        
+        .socials {
+            display: flex;
+            gap: 14px;
+            margin-top: 12px;
+        }
+        
+        .social {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.03);
+            text-decoration: none;
+            color: #fff;
+            transition: transform .15s ease;
+        }
+        
+        .social:hover {
+            transform: translateY(-4px);
+            background: var(--white-08);
+            color: var(--navy);
+        }
+        /* Contact form */
+        
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 720px;
+        }
+        
+        .form input,
+        .form textarea {
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02);
+            color: #fff;
+            outline: none;
+            font-size: 15px;
+        }
+        
+        .form textarea {
+            min-height: 140px;
+            resize: vertical;
+        }
+        
+        .submit {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: var(--lime);
+            color: #000;
+            border-radius: 10px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        /* Spray / brush animation overlay (appears when entering section) */
+        
+        .spray {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 18%;
+            width: 60%;
+            pointer-events: none;
+            opacity: 0;
+            z-index: 8;
+        }
+        
+        .spray.show {
+            animation: sprayIn 900ms cubic-bezier(.2, .9, .2, 1) forwards;
+        }
+        
+        @keyframes sprayIn {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, 20px) scale(0.96);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, 0) scale(1.02);
+                filter: blur(0.5px);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -10px) scale(1);
+            }
+        }
+        /* Footer */
+        
+        footer {
+            padding: 30px 6%;
+            text-align: center;
+            color: var(--lavender);
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        /* small helpers */
+        
+        .muted {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+        /* Make page responsive */
+        
+        @media(max-width:720px) {
+            header {
+                padding: 12px 18px;
+            }
+            .grid {
+                gap: 16px;
+            }
+            .carousel-item {
+                min-width: 200px;
+            }
+        }
+    </style>
+    <style>
+        .carousel-track {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+        }
+        
+        .carousel-track::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="site">
+
+        <!-- Decorative texture layer (replace assets/grunge-noise.png with your file) -->
+        <div class="bg-texture"></div>
+
+        <!-- Garabatos SVG overlay (green sketches). You can replace or expand with PNGs -->
+        <div class="decor" aria-hidden="true">
+            <!-- left scribble -->
+            <svg style="position:absolute; left:6%; top:20%; width:160px; height:160px; transform:rotate(-12deg);" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 80 C28 40, 40 20, 76 30" stroke="#cbd664" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+      </svg>
+
+            <!-- crown -->
+            <svg style="position:absolute; right:12%; top:12%; width:90px; height:80px;" viewBox="0 0 100 100">
+        <path d="M6 76 L26 26 L46 66 L66 22 L86 66 L94 76 Z" stroke="#cbd664" stroke-width="5" fill="none" stroke-linejoin="round"/>
+      </svg>
+
+            <!-- brush cross -->
+            <svg style="position:absolute; right:10%; bottom:10%; width:240px; height:120px; transform:rotate(-18deg);" viewBox="0 0 300 120">
+        <path d="M4 80 Q 120 8 290 20" stroke="#cbd664" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" opacity="0.92"/>
+        <path d="M20 108 Q 150 40 280 52" stroke="#cbd664" stroke-width="12" stroke-linecap="round" opacity="0.72"/>
+      </svg>
+
+            <!-- little splatter -->
+            <svg style="position:absolute; left:2%; bottom:14%; width:120px; height:120px;">
+        <circle cx="18" cy="30" r="4" fill="#cbd664"/>
+        <circle cx="36" cy="54" r="3.5" fill="#cbd664"/>
+        <circle cx="8" cy="70" r="2.5" fill="#cbd664"/>
+      </svg>
+        </div>
+
+        <!-- Header / Nav -->
+        <header>
+            <div class="brand">Portfolio</div>
+            <nav>
+                <ul>
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#cortometrajes">Cortometrajes</a></li>
+                    <li><a href="#ilustracion">Ilustración</a></li>
+                    <li><a href="#modelado">Modelado</a></li>
+                    <li><a href="#about">Me</a></li>
+                    <li><a href="#contacto">Contáctame</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Main content (scroll-snap) -->
+        <main>
+
+            <!-- SPRAY OVERLAY (positioned and shown with JS on section enter) -->
+            <div class="spray" id="sprayOverlay">
+                <!-- simple SVG spray/brush -->
+                <svg viewBox="0 0 800 200" width="100%" height="100%">
+          <g fill="#cbd664" opacity="0.95">
+            <path d="M20 150 Q 120 40 260 130 T 760 120 L 760 160 L 20 160 Z" />
+          </g>
+        </svg>
+            </div>
+
+            <!-- INICIO / HERO + DEMO REEL -->
+            <section id="inicio">
+                <div class="title"> ¡Holii!</div>
+                <div class="subtitle">Animadora, diseñadora y artista visual</div>
+
+                <div class="grid" style="margin-top:18px;">
+                    <div>
+                        <p class="muted">Soy Chameleon Croo pero me puedes decir ID, y te doy la bienvenida a mi espacio creativo.</p>
+                        <p class="muted" style="margin-top:12px;">Este lugar es una muestra de lo que más disfruto hacer. Podräs conocer mi trabajo,explorar mis proyectos y descubrir </p>
+                        <p class="muted" style="margin-top:12px;">Este portafolio es un reflejo de mi proceso, de mi crecimiento y de las ganas.que tengo de seguir aprendiendo y colaborando </p>
+                        <p class="muted" style="margin-top:12px;">en nuevos proyectos. ¡Gracias por darte una vuelta, espero que disfrutes lo que ves! </p>
+                    </div>
+
+                    <div>
+                        <div class="demo card" style="overflow:hidden;">
+                            <!-- Replace src with your demo reel file -->
+                            <video controls playsinline poster="assets/demo-poster.jpg">
+                <source src="assets/demoReel.mp4" type="video/mp4">
+                Tu navegador no soporta video.
+              </video>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CORTOMETRAJES -->
+            <section id="cortometrajes">
+                <div>
+                    <div class="title">Cortometrajes</div>
+                    <div class="subtitle">Narrativa audiovisual — selección de 4 cortos</div>
+                </div>
+
+                <div class="grid" style="margin-top: 18px;">
+                    <!-- 4 thumbnails -->
+                    <div class="card">
+                        <img class="thumb" src="assets/corto1.jpg" alt="Corto 1">
+                        <div class="meta">
+                            <div style="font-weight:700;">Corto 1 — Consecuencias </div>
+                            <div class="muted" style="margin-top:6px;">Dirección, Guion — 4 min</div>
+                            <div style="margin-top:10px;">
+                                <a class="link-btn" href="https://youtu.be/Kj0RVb0goiw?si=Ac8GBQULzfIveJ-n" target="_blank" rel="noopener">Ver en YouTube</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <img class="thumb" src="assets/corto2.png" alt="Corto 2">
+                        <div class="meta">
+                            <div style="font-weight:700;">Corto 2 — La Leyenda del Sinsimito</div>
+                            <div class="muted" style="margin-top:6px;">Dirección, animación, modelado — 2 min</div>
+                            <div style="margin-top:10px;">
+                                <a class="link-btn" href="https://youtu.be/iYISvrmFjuc?feature=shared" target="_blank" rel="noopener">Ver en YouTube</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <img class="thumb" src="assets/corto3.jpg" alt="Corto 3">
+                        <div class="meta">
+                            <div style="font-weight:700;">Corto 3 — The Backroom 847</div>
+                            <div class="muted" style="margin-top:6px;">Modelado, texturiado, Edición — 3 min</div>
+                            <div style="margin-top:10px;">
+                                <a class="link-btn" href="https://youtu.be/ht33wXsW2Qg?feature=shared" target="_blank" rel="noopener">Ver en YouTube</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <img class="thumb" src="assets/corto4.jpg" alt="Corto 4">
+                        <div class="meta">
+                            <div style="font-weight:700;">Corto 4 — Deja Vu</div>
+                            <div class="muted" style="margin-top:6px;"> animación, modelado, edición — 2 min</div>
+                            <div style="margin-top:10px;">
+                                <a class="link-btn" href="https://youtu.be/_vO6vHNJcGI?feature=shared" target="_blank" rel="noopener">Ver en YouTube</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- 👈 Cierra correctamente la sección de cortometrajes -->
+
+            <!-- ILUSTRACIÓN -->
+            <section id="ilustracion">
+
+                <div>
+                    <div class="title">Ilustración</div>
+                    <div class="subtitle">Selección personal </div>
+                </div>
+
+                <div style="margin-top:18px;">
+                    <!-- Simple carousel -->
+                    <div class="carousel" id="ilusCarousel" aria-label="Carrusel ilustraciones">
+                        <div class="carousel-track" id="ilustrack">
+                            <div class="carousel-item card"><img class="thumb" src="assets/il1.jpg" alt="Ilustración 1"></div>
+                            <div class="carousel-item card"><img class="thumb" src="assets/il2.jpg" alt="Ilustración 2"></div>
+                            <div class="carousel-item card"><img class="thumb" src="assets/il3.jpg" alt="Ilustración 3"></div>
+                            <div class="carousel-item card"><img class="thumb" src="assets/il4.jpg" alt="Ilustración 4"></div>
+                            <div class="carousel-item card"><img class="thumb" src="assets/il5.jpg" alt="Ilustración 5"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODELADO -->
+            <section id="modelado">
+                <div>
+                    <div class="title">Modelado 3D</div>
+                    <div class="subtitle">Proyectos — 3 sets</div>
+                </div>
+
+                <div style="margin-top:18px; display:flex; flex-direction:column; gap:26px;">
+                    <!-- Carousel 1 -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <h4 style="margin:0; color:var(--lavender);">Departamento isométrico</h4>
+                            <div class="muted">Modelado, texturizado, Iluminación</div>
+                        </div>
+                        <div class="carousel" style="margin-top:12px;">
+                            <div class="carousel-track" id="propsTrack">
+                                <div class="carousel-item card"><img class="thumb" src="assets/prop1.jpg" alt=""></div>
+                                <div class="carousel-item card"><img class="thumb" src="assets/prop2.jpg" alt=""></div>
+                                <div class="carousel-item card"><img class="thumb" src="assets/prop3.jpg" alt=""></div>
+                                <div class="carousel-item card"><img class="thumb" src="assets/prop4.jpg" alt=""></div>
+                                <div class="carousel-item card"><img class="thumb" src="assets/prop5.jpg" alt=""></div>
+                                <div class="carousel-item card"><img class="thumb" src="assets/prop6.jpg" alt=""></div>
+                            </div>
+                        </div>
+                        <p class="muted" style="margin-top:8px;">Descripción: Diseño de un departamento ficticio</p>
+                    </div>
+
+                    <!-- Carousel 2 -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <h4 style="margin:0; color:var(--lavender);">Diseño de Escenario</h4>
+                            <div class="muted">Moldelado, texturiado para criatura.</div>
+                        </div>
+                        <div class="carousel" style="margin-top:12px;">
+                            <div class="carousel-track" id="charsTrack">
+                                <div class="carousel-item card"><img class="thumb" src="assets/char1.jpg" alt=""></div>
+                                <div class="carousel-item card"><img class="thumb" src="assets/char2.jpg" alt=""></div>
+                                <div class="carousel-item card"><img class="thumb" src="assets/char3.jpg" alt=""></div>
+                                <div class="carousel-item card"><img class="thumb" src="assets/char4.jpg" alt=""></div>
+                            </div>
+                        </div>
+                        <p class="muted" style="margin-top:8px;">Descripción: Concept art, habitat para criatura fantástica..</p>
+                    </div>
+
+                    <!-- Carousel 3 -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <h4 style="margin:0; color:var(--lavender);">Diseño Nivel</h4>
+                            <div class="muted">Modelado y texturizado</div>
+                        </div>
+                        <div class="carousel" style="margin-top:12px;">
+                            <div class="carousel-track" id="envTrack">
+                                <div class="carousel-item card"><img class="thumb" src="assets/env1.jpeg" alt=""></div>
+                                <div class="carousel-item card"><img class="thumb" src="assets/env2.jpeg" alt=""></div>
+                                <div class="carousel-item card"><img class="thumb" src="assets/env3.jpeg" alt=""></div>
+                                <div class="carousel-item card"><img class="thumb" src="assets/env4.jpeg" alt=""></div>
+                                <div class="carousel-item card"><img class="thumb" src="assets/env5.jpeg" alt=""></div>
+                                <div class="carousel-item card"><img class="thumb" src="assets/env6.jpeg" alt=""></div>
+                            </div>
+                        </div>
+                        <p class="muted" style="margin-top:8px;">Descripción: Escenarios conceptual para un nuevo nivel de videojuego fall guys.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ABOUT -->
+            <section id="about">
+                <div>
+                    <div class="title">About Me</div>
+                    <div class="subtitle">Conóceme</div>
+                </div>
+
+                <div class="grid" style="margin-top:18px; align-items:center;">
+                    <div>
+                        <img src="assets/me.png" alt="Yo" style="width:100%; border-radius:12px; max-height:420px; object-fit:cover; border:1px solid rgba(255,255,255,0.04);" />
+                    </div>
+
+                    <div>
+                        <p class="muted">Hola, soy Aidee o Id — diseñadora y animadora. Estudié diseño, animación y arte digital. Me gusta el cine, el deporte, las luchas sociales y la Ilustración.</p>
+
+                        <div class="socials" style="margin-top:18px;">
+                            <!-- Replace href with your real links -->
+                            <a class="social" href="https://www.instagram.com/crooked_chameleon?igsh=MWFxb3N5OTV0bmQ4eQ%3D%3D&utm_source=qr" target="_blank" rel="noopener">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5z" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>                                Instagram
+                            </a>
+
+                            <a class="social" href="mailto:chameleoncroo@gmail.com" target="_blank">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));"><path d="M3 8l9 6 9-6" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 6H3v12a2 2 0 002 2h14a2 2 0 002-2V6z" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>                                Email
+                            </a>
+
+                            <a class="social" href="tel:+52 55 71 96 45 09" target="_blank">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));"><path d="M22 16.92V21a1 1 0 01-1.11 1 19.86 19.86 0 01-8.63-3.13 19.5 19.5 0 01-6-6A19.86 19.86 0 012 3.11 1 1 0 013 2h4.09a1 1 0 011 .75c.12.8.35 1.58.66 2.31a1 1 0 01-.24 1L7.7 8.7a16 16 0 007.6 7.6l1.6-1.96a1 1 0 011-.24c.73.31 1.51.54 2.31.66a1 1 0 01.75 1V21z" stroke="#fff" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>                                Teléfono
+                            </a>
+
+                            <a class="social" href="https://youtube.com/@idchameleon?si=GpKb9wrQ7r1I8gVP" target="_blank" rel="noopener">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.95C18.88 4 12 4 12 4s-6.88 0-8.59.47A2.78 2.78 0 001.46 6.42 29.13 29.13 0 001 12a29.13 29.13 0 00.46 5.58 2.78 2.78 0 001.95 1.95C5.12 20 12 20 12 20s6.88 0 8.59-.47a2.78 2.78 0 001.95-1.95A29.13 29.13 0 0023 12a29.13 29.13 0 00-.46-5.58z" stroke="#fff" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 15l5-3-5-3v6z" stroke="#fff" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/></svg>                                YouTube
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CONTACTO -->
+            <section id="contacto">
+                <div>
+                    <div class="title">Contáctame</div>
+                    <div class="subtitle">¿Tienes un proyecto? Hablemos.</div>
+                </div>
+
+                <div style="margin-top:18px; display:flex; gap:28px; flex-direction:column;">
+                    <div class="muted">Llena el formulario y te responderé a la brevedad.</div>
+
+                    <!-- FORM: Replace YOUR_FORMSPREE_ID_HERE with your Formspree form ID -->
+                    <form class="form card" id="contactForm" action="https://formspree.io/f/xdkwbgak" method="POST">
+                        <!-- If you prefer, create endpoint in Formspree that forwards to chameleoncroo@gmail.com -->
+                        <input type="text" name="name" placeholder="Tu nombre" required />
+                        <input type="email" name="email" placeholder="Tu correo" required />
+                        <input type="text" name="subject" placeholder="Asunto (opcional)" />
+                        <textarea name="message" placeholder="Escribe tu mensaje o solicitud..." required></textarea>
+
+                        <!-- Hidden field: you can prefill or use recaptcha if needed -->
+                        <input type="hidden" name="_subject" value="Nuevo mensaje desde portafolio - web" />
+
+                        <div style="display:flex; gap:12px; align-items:center;">
+                            <button class="submit" type="submit">Enviar</button>
+                            <div id="formStatus" class="muted" style="font-size:13px;">(Se enviará a chameleoncroo@gmail.com vía Formspree)</div>
+                        </div>
+                    </form>
+
+                </div>
+            </section>
+
+        </main>
+
+        <footer>
+            © <span id="year"></span> Portfolio
+        </footer>
+    </div>
+
+    <!-- JS: Smooth effects, carousels and spray animation trigger -->
+    <script>
+        // === ACTUALIZA EL AÑO ===
+        const yearEl = document.getElementById("year");
+        if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+        // === CARRUSEL DESLIZABLE (drag y touch) ===
+        document.querySelectorAll(".carousel-track").forEach(track => {
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            // Mouse
+            track.addEventListener("mousedown", e => {
+                isDown = true;
+                track.classList.add("dragging");
+                startX = e.pageX - track.offsetLeft;
+                scrollLeft = track.scrollLeft;
+            });
+
+            track.addEventListener("mouseleave", () => {
+                isDown = false;
+                track.classList.remove("dragging");
+            });
+
+            track.addEventListener("mouseup", () => {
+                isDown = false;
+                track.classList.remove("dragging");
+            });
+
+            track.addEventListener("mousemove", e => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - track.offsetLeft;
+                const walk = (x - startX) * 1.2; // velocidad
+                track.scrollLeft = scrollLeft - walk;
+            });
+
+            // Touch (para móviles)
+            track.addEventListener("touchstart", e => {
+                isDown = true;
+                startX = e.touches[0].pageX - track.offsetLeft;
+                scrollLeft = track.scrollLeft;
+            });
+
+            track.addEventListener("touchend", () => {
+                isDown = false;
+            });
+
+            track.addEventListener("touchmove", e => {
+                if (!isDown) return;
+                const x = e.touches[0].pageX - track.offsetLeft;
+                const walk = (x - startX) * 1.2;
+                track.scrollLeft = scrollLeft - walk;
+            });
+        });
+
+        // === LIGHTBOX (imagen grande) ===
+        const lightbox = document.createElement("div");
+        lightbox.id = "lightbox";
+        lightbox.style.position = "fixed";
+        lightbox.style.top = "0";
+        lightbox.style.left = "0";
+        lightbox.style.width = "100%";
+        lightbox.style.height = "100%";
+        lightbox.style.background = "rgba(0, 0, 0, 0.8)";
+        lightbox.style.display = "flex";
+        lightbox.style.alignItems = "center";
+        lightbox.style.justifyContent = "center";
+        lightbox.style.zIndex = "1000";
+        lightbox.style.opacity = "0";
+        lightbox.style.pointerEvents = "none";
+        lightbox.style.transition = "opacity 0.3s ease";
+        document.body.appendChild(lightbox);
+
+        const imgBig = document.createElement("img");
+        imgBig.style.maxWidth = "90%";
+        imgBig.style.maxHeight = "90%";
+        imgBig.style.borderRadius = "12px";
+        imgBig.style.boxShadow = "0 0 25px rgba(255,255,255,0.3)";
+        lightbox.appendChild(imgBig);
+
+        // Función para abrir imagen
+        function showImage(src) {
+            imgBig.src = src;
+            lightbox.style.opacity = "1";
+            lightbox.style.pointerEvents = "auto";
+            document.body.style.overflow = "hidden";
+        }
+
+        // Función para cerrar
+        function closeLightbox() {
+            lightbox.style.opacity = "0";
+            lightbox.style.pointerEvents = "none";
+            document.body.style.overflow = "";
+        }
+
+        // Click fuera de la imagen o Esc = cerrar
+        lightbox.addEventListener("click", e => {
+            if (e.target === lightbox) closeLightbox();
+        });
+        window.addEventListener("keydown", e => {
+            if (e.key === "Escape") closeLightbox();
+        });
+
+        // Añadir evento a todas las imágenes de los carruseles
+        document.querySelectorAll(".carousel-item img").forEach(img => {
+            img.style.cursor = "pointer";
+            img.addEventListener("click", () => {
+                showImage(img.src);
+            });
+        });
+
+        // === FORMULARIO DE CONTACTO ===
+        const contactForm = document.getElementById("contactForm");
+        const formStatus = document.getElementById("formStatus");
+        if (contactForm && formStatus) {
+            contactForm.addEventListener("submit", e => {
+                e.preventDefault();
+                formStatus.textContent = "Enviando...";
+                const data = new FormData(contactForm);
+                const action = contactForm.getAttribute("action") || "";
+                fetch(action, {
+                        method: "POST",
+                        body: data,
+                        headers: {
+                            "Accept": "application/json"
+                        }
+                    })
+                    .then(res => {
+                        if (res.ok) {
+                            formStatus.textContent = "¡Mensaje enviado! Te responderé pronto.";
+                            contactForm.reset();
+                        } else {
+                            formStatus.textContent = "Error al enviar. Intenta de nuevo.";
+                        }
+                    })
+                    .catch(() => (formStatus.textContent = "Error de red. Intenta de nuevo más tarde."));
+            });
+        }
+
+        // === NAV ACTIVO AL HACER SCROLL ===
+        const navLinks = document.querySelectorAll("nav a");
+
+        function onScrollHighlight() {
+            const scrollPos = window.scrollY + window.innerHeight / 3;
+            document.querySelectorAll("main section").forEach(sec => {
+                const top = sec.offsetTop;
+                const bottom = top + sec.offsetHeight;
+                const id = sec.getAttribute("id");
+                const link = document.querySelector(`nav a[href="#${id}"]`);
+                if (scrollPos >= top && scrollPos < bottom) {
+                    navLinks.forEach(a => a.classList.remove("active"));
+                    if (link) link.classList.add("active");
+                }
+            });
+        }
+        window.addEventListener("scroll", onScrollHighlight);
+        onScrollHighlight();
+    </script>
+</body>
+
+</html>
